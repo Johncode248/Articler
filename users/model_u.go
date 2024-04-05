@@ -1,7 +1,11 @@
 package users
 
 type User struct {
-	userId   string
-	username string
-	password string
+	UserId   string
+	Username string
+	Password string
+}
+
+func GetPassword(user User) string {
+	return user.Password
 }

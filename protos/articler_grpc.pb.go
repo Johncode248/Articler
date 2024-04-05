@@ -23,6 +23,15 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArticlerServiceClient interface {
 	SayHello(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
+	Login(ctx context.Context, in *LoginForm, opts ...grpc.CallOption) (*Message, error)
+	Register(ctx context.Context, in *LoginForm, opts ...grpc.CallOption) (*Message, error)
+	UpdateUser(ctx context.Context, in *UpdateUserForm, opts ...grpc.CallOption) (*Message, error)
+	DeleteUser(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
+	// Article
+	CreateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error)
+	UpdateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error)
+	DeleteArticle(ctx context.Context, in *DelateArticleForm, opts ...grpc.CallOption) (*Message, error)
+	GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
 }
 
 type articlerServiceClient struct {
@@ -42,11 +51,92 @@ func (c *articlerServiceClient) SayHello(ctx context.Context, in *Message, opts 
 	return out, nil
 }
 
+func (c *articlerServiceClient) Login(ctx context.Context, in *LoginForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) Register(ctx context.Context, in *LoginForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) UpdateUser(ctx context.Context, in *UpdateUserForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/UpdateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) DeleteUser(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/DeleteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) CreateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/CreateArticle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) UpdateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/UpdateArticle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) DeleteArticle(ctx context.Context, in *DelateArticleForm, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/DeleteArticle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articlerServiceClient) GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/ArticlerService/GetArticles", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticlerServiceServer is the server API for ArticlerService service.
 // All implementations must embed UnimplementedArticlerServiceServer
 // for forward compatibility
 type ArticlerServiceServer interface {
 	SayHello(context.Context, *Message) (*Message, error)
+	Login(context.Context, *LoginForm) (*Message, error)
+	Register(context.Context, *LoginForm) (*Message, error)
+	UpdateUser(context.Context, *UpdateUserForm) (*Message, error)
+	DeleteUser(context.Context, *Message) (*Message, error)
+	// Article
+	CreateArticle(context.Context, *ArticleForm) (*Message, error)
+	UpdateArticle(context.Context, *ArticleForm) (*Message, error)
+	DeleteArticle(context.Context, *DelateArticleForm) (*Message, error)
+	GetArticles(context.Context, *Message) (*Message, error)
 	mustEmbedUnimplementedArticlerServiceServer()
 }
 
@@ -56,6 +146,30 @@ type UnimplementedArticlerServiceServer struct {
 
 func (UnimplementedArticlerServiceServer) SayHello(context.Context, *Message) (*Message, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+}
+func (UnimplementedArticlerServiceServer) Login(context.Context, *LoginForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedArticlerServiceServer) Register(context.Context, *LoginForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedArticlerServiceServer) UpdateUser(context.Context, *UpdateUserForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedArticlerServiceServer) DeleteUser(context.Context, *Message) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedArticlerServiceServer) CreateArticle(context.Context, *ArticleForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
+}
+func (UnimplementedArticlerServiceServer) UpdateArticle(context.Context, *ArticleForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
+}
+func (UnimplementedArticlerServiceServer) DeleteArticle(context.Context, *DelateArticleForm) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
+}
+func (UnimplementedArticlerServiceServer) GetArticles(context.Context, *Message) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
 }
 func (UnimplementedArticlerServiceServer) mustEmbedUnimplementedArticlerServiceServer() {}
 
@@ -88,6 +202,150 @@ func _ArticlerService_SayHello_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticlerService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).Login(ctx, req.(*LoginForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).Register(ctx, req.(*LoginForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/UpdateUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).UpdateUser(ctx, req.(*UpdateUserForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).DeleteUser(ctx, req.(*Message))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).CreateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/CreateArticle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).CreateArticle(ctx, req.(*ArticleForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_UpdateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ArticleForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).UpdateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/UpdateArticle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).UpdateArticle(ctx, req.(*ArticleForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_DeleteArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelateArticleForm)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).DeleteArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/DeleteArticle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).DeleteArticle(ctx, req.(*DelateArticleForm))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticlerService_GetArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).GetArticles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/GetArticles",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).GetArticles(ctx, req.(*Message))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticlerService_ServiceDesc is the grpc.ServiceDesc for ArticlerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +356,38 @@ var ArticlerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SayHello",
 			Handler:    _ArticlerService_SayHello_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _ArticlerService_Login_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _ArticlerService_Register_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _ArticlerService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _ArticlerService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "CreateArticle",
+			Handler:    _ArticlerService_CreateArticle_Handler,
+		},
+		{
+			MethodName: "UpdateArticle",
+			Handler:    _ArticlerService_UpdateArticle_Handler,
+		},
+		{
+			MethodName: "DeleteArticle",
+			Handler:    _ArticlerService_DeleteArticle_Handler,
+		},
+		{
+			MethodName: "GetArticles",
+			Handler:    _ArticlerService_GetArticles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

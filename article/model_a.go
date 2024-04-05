@@ -8,4 +8,5 @@ type Article struct {
 	description   string
 	summary       string
 	timePublished time.Time
+	author        string
 }
