@@ -27,11 +27,12 @@ type ArticlerServiceClient interface {
 	Register(ctx context.Context, in *LoginForm, opts ...grpc.CallOption) (*Message, error)
 	UpdateUser(ctx context.Context, in *UpdateUserForm, opts ...grpc.CallOption) (*Message, error)
 	DeleteUser(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
+	GetAuthorByID(ctx context.Context, in *Message, opts ...grpc.CallOption) (*LoginForm, error)
 	// Article
 	CreateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error)
 	UpdateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error)
 	DeleteArticle(ctx context.Context, in *DelateArticleForm, opts ...grpc.CallOption) (*Message, error)
-	GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
+	GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ListArticles, error)
 }
 
 type articlerServiceClient struct {
@@ -87,6 +88,15 @@ func (c *articlerServiceClient) DeleteUser(ctx context.Context, in *Message, opt
 	return out, nil
 }
 
+func (c *articlerServiceClient) GetAuthorByID(ctx context.Context, in *Message, opts ...grpc.CallOption) (*LoginForm, error) {
+	out := new(LoginForm)
+	err := c.cc.Invoke(ctx, "/ArticlerService/GetAuthorByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *articlerServiceClient) CreateArticle(ctx context.Context, in *ArticleForm, opts ...grpc.CallOption) (*Message, error) {
 	out := new(Message)
 	err := c.cc.Invoke(ctx, "/ArticlerService/CreateArticle", in, out, opts...)
@@ -114,8 +124,8 @@ func (c *articlerServiceClient) DeleteArticle(ctx context.Context, in *DelateArt
 	return out, nil
 }
 
-func (c *articlerServiceClient) GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error) {
-	out := new(Message)
+func (c *articlerServiceClient) GetArticles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*ListArticles, error) {
+	out := new(ListArticles)
 	err := c.cc.Invoke(ctx, "/ArticlerService/GetArticles", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -132,11 +142,12 @@ type ArticlerServiceServer interface {
 	Register(context.Context, *LoginForm) (*Message, error)
 	UpdateUser(context.Context, *UpdateUserForm) (*Message, error)
 	DeleteUser(context.Context, *Message) (*Message, error)
+	GetAuthorByID(context.Context, *Message) (*LoginForm, error)
 	// Article
 	CreateArticle(context.Context, *ArticleForm) (*Message, error)
 	UpdateArticle(context.Context, *ArticleForm) (*Message, error)
 	DeleteArticle(context.Context, *DelateArticleForm) (*Message, error)
-	GetArticles(context.Context, *Message) (*Message, error)
+	GetArticles(context.Context, *Message) (*ListArticles, error)
 	mustEmbedUnimplementedArticlerServiceServer()
 }
 
@@ -159,6 +170,9 @@ func (UnimplementedArticlerServiceServer) UpdateUser(context.Context, *UpdateUse
 func (UnimplementedArticlerServiceServer) DeleteUser(context.Context, *Message) (*Message, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
+func (UnimplementedArticlerServiceServer) GetAuthorByID(context.Context, *Message) (*LoginForm, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAuthorByID not implemented")
+}
 func (UnimplementedArticlerServiceServer) CreateArticle(context.Context, *ArticleForm) (*Message, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
 }
@@ -168,7 +182,7 @@ func (UnimplementedArticlerServiceServer) UpdateArticle(context.Context, *Articl
 func (UnimplementedArticlerServiceServer) DeleteArticle(context.Context, *DelateArticleForm) (*Message, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
-func (UnimplementedArticlerServiceServer) GetArticles(context.Context, *Message) (*Message, error) {
+func (UnimplementedArticlerServiceServer) GetArticles(context.Context, *Message) (*ListArticles, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticles not implemented")
 }
 func (UnimplementedArticlerServiceServer) mustEmbedUnimplementedArticlerServiceServer() {}
@@ -274,6 +288,24 @@ func _ArticlerService_DeleteUser_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticlerService_GetAuthorByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticlerServiceServer).GetAuthorByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ArticlerService/GetAuthorByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticlerServiceServer).GetAuthorByID(ctx, req.(*Message))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ArticlerService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ArticleForm)
 	if err := dec(in); err != nil {
@@ -372,6 +404,10 @@ var ArticlerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _ArticlerService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "GetAuthorByID",
+			Handler:    _ArticlerService_GetAuthorByID_Handler,
 		},
 		{
 			MethodName: "CreateArticle",

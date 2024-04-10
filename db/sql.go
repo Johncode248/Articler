@@ -21,7 +21,7 @@ func OpenDatabaseUsers() error {
 	_, err = dbUsers.Exec(`
 	CREATE TABLE IF NOT EXISTS users_table (
 		id INT AUTO_INCREMENT PRIMARY KEY,
-		userId VARCHAR(45),
+		userId VARCHAR(100),
 		name VARCHAR(45),
 		password VARCHAR(100)
 	);`)
@@ -40,11 +40,11 @@ func OpenDatabaseArticles() error {
 	_, err = dbArticles.Exec(`
 	CREATE TABLE IF NOT EXISTS article_table (
 		id INT AUTO_INCREMENT PRIMARY KEY,
-		articleId VARCHAR(45),
+		articleId VARCHAR(100),
 		title VARCHAR(45),
-		description VARCHAR(100),
+		description VARCHAR(300),
 		summary VARCHAR(100),
-		timePublished VARCHAR(120),
+		timePublished DATETIME,
 		author VARCHAR(45)
 	);`)
 	if err != nil {

@@ -12,19 +12,10 @@ import (
 )
 
 func main() {
-	lis, err := net.Listen("tcp", ":9008")
+	lis, err := net.Listen("tcp", ":9009")
 	if err != nil {
 		log.Fatal("Failed to listen on port 9008: %v", err)
 	}
-	//
-	p1, _ := db.HashPassword("asekus123")
-	p2, _ := db.HashPassword("asekus123")
-	p3, _ := db.HashPassword("asekus123")
-	log.Println("p1 ", p1)
-	log.Println("p2 ", p2)
-	log.Println("p3 ", p3)
-
-	//
 
 	err = db.CreateDatabases()
 	if err != nil {

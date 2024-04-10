@@ -18,8 +18,9 @@ message ArticleForm{
     string content = 2;
     string shortContent = 3;
     string createTime = 4;
-    uint64 authorId = 5;
+    string authorId = 5;
     string token = 6;   
+    string articleId = 7;
 }
 
 message UpdateUserForm{
@@ -34,6 +35,10 @@ message DelateArticleForm{
 
 }
 
+message ListArticles{
+    repeated ArticleForm arts = 1;
+}
+
 service ArticlerService {
     rpc SayHello(Message) returns (Message) {}
 
@@ -42,13 +47,14 @@ service ArticlerService {
     rpc Login(LoginForm) returns (Message) {}
     rpc Register(LoginForm) returns (Message) {}
     rpc UpdateUser(UpdateUserForm) returns (Message) {} // username, password|| message = token
-    rpc DeleteUser(Message) returns (Message) {}  // message is token
+    rpc DeleteUser(Message) returns (Message) {}  // message is token   i usuwa wszystkie jego articles
+    rpc GetAuthorByID(Message) returns (LoginForm) {}
 
     // Article
     rpc CreateArticle(ArticleForm) returns (Message) {}
     rpc UpdateArticle(ArticleForm) returns (Message) {}
     rpc DeleteArticle(DelateArticleForm) returns (Message) {}
-    rpc GetArticles(Message) returns (Message) {}   // message definiuje co chce otrzymac || tylko moje || czy WSZYSTKIE
+    rpc GetArticles(Message) returns (ListArticles) {}   // message definiuje co chce otrzymac || tylko moje || czy WSZYSTKIE
     
 
 }

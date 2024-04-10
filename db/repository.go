@@ -3,8 +3,11 @@ package db
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"log"
+	"time"
 
+	art "github.com/johncode/articler/article"
 	us "github.com/johncode/articler/users"
 )
 
@@ -16,16 +19,14 @@ func CreateUser(userId string, name string, password string) error {
 	}
 	defer ins.Close()
 
-	password, err = HashPassword(password)
+	passwordHashed, err := HashPassword(password)
 	if err != nil {
 		panic(err)
 	}
 
-	res, err := ins.Exec(userId, name, password)
+	_, err = ins.Exec(userId, name, passwordHashed)
 
-	rowsAffec, _ := res.RowsAffected()
-	if err != nil || rowsAffec != 1 {
-		log.Fatal(err)
+	if err != nil {
 		return err
 	}
 
@@ -45,13 +46,33 @@ func GetUser(username string) (us.User, error) {
 }
 
 func UpdateUserRepo(userInfo us.User) error {
-	upStmt := "UPDATE `db1`.`users_table` SET `name` = ?, `password` = ? WHERE (`userId` = ?);"
-	_, err := dbUsers.Exec(upStmt, userInfo.Username, userInfo.Password, userInfo.UserId)
-	if err != nil {
-		return err
+
+	var upStmt string
+
+	fmt.Println("Updating")
+	fmt.Println("username: ", userInfo.Username)
+	fmt.Println("pass: ", userInfo.Password)
+
+	if userInfo.Username != "" {
+		upStmt = "UPDATE `db1`.`users_table` SET `name` = ? WHERE (`userId` = ?);"
+		_, err := dbUsers.Exec(upStmt, userInfo.Username, userInfo.UserId)
+		if err != nil {
+			return err
+		}
+	}
+
+	if userInfo.Password != "" {
+		hashedPass, err := HashPassword(userInfo.Password)
+		if err != nil {
+			return err
+		}
+		upStmt = "UPDATE `db1`.`users_table` SET `password` = ? WHERE (`userId` = ?);"
+		_, err = dbUsers.Exec(upStmt, hashedPass, userInfo.UserId)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
-
 }
 
 func DeleteUserRepo(userId string) error {
@@ -59,30 +80,143 @@ func DeleteUserRepo(userId string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func HashPassword(password string) (string, error) {
-	/*
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		if err != nil {
-			return "", err
-		}
-		return string(hashedPassword), nil
-	*/
 
-	// Tworzenie instancji haszera SHA256
 	hasher := sha256.New()
 
-	// Konwertowanie hasła na bajty i haszowanie
 	hasher.Write([]byte(password))
 
-	// Pobieranie zsumowanych danych jako bajtów
 	hashedPassword := hasher.Sum(nil)
 
-	// Konwersja zsumowanych danych na szesnastkową reprezentację stringa
 	hashedPasswordString := hex.EncodeToString(hashedPassword)
 
 	return hashedPasswordString, nil
+}
+
+// Articles
+
+func CreateArticleRepo(article art.Article) error {
+	ins, err := dbArticles.Prepare("INSERT INTO `db1`.`article_table` (`articleId`,`title`, `description`, `summary`,`timePublished`, `author`) VALUES(?, ?, ?, ?, ?, ?);")
+	if err != nil {
+		return err
+	}
+	defer ins.Close()
+
+	res, err := ins.Exec(article.Id, article.Title, article.Description, article.Summary, article.TimePublished, article.Author)
+
+	rowsAffec, _ := res.RowsAffected()
+	if err != nil || rowsAffec != 1 {
+		log.Fatal(err)
+		return err
+	}
+
+	log.Println("Created")
+
+	return nil
+}
+
+func DeleteArticleRepo(articleId string) error {
+	_, err := dbUsers.Exec("DELETE FROM `db1`.`article_table` WHERE (`articleId` = ?)", articleId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetArticlesRepo(authorId string) ([]art.Article, error) {
+	fmt.Println("start")
+
+	page := 1
+	pageSize := 10
+
+	var query string
+	if authorId == "all" {
+		query = fmt.Sprintf("SELECT articleId, title, description, summary, timePublished, author FROM db1.article_table ORDER BY timePublished DESC LIMIT %d OFFSET %d", pageSize, (page-1)*pageSize)
+	} else {
+		query = fmt.Sprintf("SELECT articleId, title, description, summary, timePublished, author FROM db1.article_table WHERE author = '%s' ORDER BY timePublished DESC LIMIT %d OFFSET %d", authorId, pageSize, (page-1)*pageSize)
+
+	}
+
+	// Wykonaj zapytanie do bazy danych
+	rows, err := dbArticles.Query(query)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var articles []art.Article
+
+	for rows.Next() {
+		var article art.Article
+
+		var timePublishedString string
+		err := rows.Scan(&article.Id, &article.Title, &article.Description, &article.Summary, &timePublishedString, &article.Author) // add time.Published
+		if err != nil {
+			return nil, err
+		}
+		article.TimePublished, err = time.Parse("2006-01-02 15:04:05", timePublishedString)
+		if err != nil {
+			return nil, err
+		}
+
+		articles = append(articles, article)
+	}
+
+	fmt.Println("Repo:  ", articles)
+
+	return articles, nil
+}
+
+func GetAuthorRepo(authorId string) (string, string) {
+
+	fmt.Println("id  ", authorId)
+	query := "SELECT name, password FROM `db1`.`users_table` WHERE userId = ?;"
+	var name string
+	var pass string
+	err := dbUsers.QueryRow(query, authorId).Scan(&name, &pass)
+	if err != nil {
+		return "", ""
+	}
+
+	fmt.Println(err)
+
+	return name, pass
+}
+
+func UpdateArticleRepo(article *art.Article) error {
+
+	var upStmt string
+
+	if article.Title != "" {
+		upStmt = "UPDATE `db1`.`article_table` SET `title` = ? WHERE (`articleId` = ?);"
+		_, err := dbArticles.Exec(upStmt, article.Title, article.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if article.Summary != "" {
+
+		upStmt = "UPDATE `db1`.`article_table` SET `summary` = ? WHERE (`articleId` = ?);"
+		_, err := dbArticles.Exec(upStmt, article.Summary, article.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if article.Description != "" {
+
+		upStmt = "UPDATE `db1`.`article_table` SET `description` = ? WHERE (`articleId` = ?);"
+		_, err := dbArticles.Exec(upStmt, article.Description, article.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

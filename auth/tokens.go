@@ -4,47 +4,12 @@ package auth
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 var secretKey = []byte("secretkey")
-
-// function for admin
-/*
-func CreateTokenHandler(userId string) string {
-
-	token, err := CreateToken(userId)
-	if err != nil {
-		return ""
-	}
-
-	return token
-}*/
-
-func VerifyTokenHandler(w http.ResponseWriter, r *http.Request) (bool, jwt.MapClaims) {
-	tokenString := r.Header.Get("Authorization")
-	if tokenString == "" {
-		http.Error(w, "no token", http.StatusUnauthorized)
-		return false, nil
-	}
-
-	claims, err := VerifyToken(tokenString)
-	if err != nil {
-		http.Error(w, "Invalid token: "+err.Error(), http.StatusUnauthorized)
-		return false, nil
-	}
-
-	//username := claims["username"].(string)
-	//w.Write([]byte("Token verification successful. User: " + username))
-	if err == nil {
-
-		return true, claims
-	}
-	return true, claims
-}
 
 func CreateToken(username string) (string, error) {
 	claims := jwt.MapClaims{

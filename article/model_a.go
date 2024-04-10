@@ -4,9 +4,9 @@ import "time"
 
 type Article struct {
 	Id            string
-	title         string
-	description   string
-	summary       string
-	timePublished time.Time
-	author        string
+	Title         string
+	Description   string
+	Summary       string
+	TimePublished time.Time
+	Author        string
 }
