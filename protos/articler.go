@@ -52,13 +52,13 @@ func (s *Server) Login(ctx context.Context, message *LoginForm) (*Message, error
 	var user us.User
 	user, err = db.GetUser(message.GetUsername())
 	if err != nil {
-		panic(err)
+		return &Message{Body: ""}, err
 	}
 	log.Println("mes: ", message.Password)
 
 	passwordInput, err := db.HashPassword(message.Password)
 	if err != nil {
-		panic(err)
+		return &Message{Body: ""}, err
 	}
 	log.Println("p1", passwordInput)
 	log.Println("p2", user.Password)
@@ -201,7 +201,6 @@ func (s *Server) DeleteArticle(ctx context.Context, input *DelateArticleForm) (*
 	return &Message{Body: "success"}, nil
 }
 
-// page WAZNE !!!!!
 func (s *Server) GetArticles(ctx context.Context, input *Message) (*ListArticles, error) {
 	var err error
 	var authorToken string = input.Body
@@ -244,3 +243,5 @@ func (s *Server) GetArticles(ctx context.Context, input *Message) (*ListArticles
 
 	return &list, nil
 }
+
+// check token only
