@@ -4,6 +4,7 @@ option go_package = "protos/";
 
 message Message{
     string body = 1;
+    string info = 2;
     
 }
 

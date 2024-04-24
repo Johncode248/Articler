@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	art "github.com/johncode/articler/article"
@@ -127,11 +128,19 @@ func DeleteArticleRepo(articleId string) error {
 	return nil
 }
 
-func GetArticlesRepo(authorId string) ([]art.Article, error) {
-	fmt.Println("start")
+func GetArticlesRepo(authorId string, pagination string) ([]art.Article, error) {
 
+	var err error
 	page := 1
-	pageSize := 10
+	pageSize := 8
+
+	if pagination != "" {
+		page, err = strconv.Atoi(pagination)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println("konvercja")
+		}
+	}
 
 	var query string
 	if authorId == "all" {

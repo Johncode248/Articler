@@ -1,3 +1,5 @@
+
+/*
 package main
 
 import (
@@ -36,24 +38,24 @@ func main() {
 			Username: "admin",
 			Password: "12345",
 		}
-	*/
-	//response, err := c.Login(context.Background(), &input)
-	//if err != nil {
-	//	panic(err)
-	//}
+*/
+//response, err := c.Login(context.Background(), &input)
+//if err != nil {
+//	panic(err)
+//}
 
-	//log.Println("Response: ", response)
+//log.Println("Response: ", response)
 
-	/*
-		message := art.Message{
-			Body: "Hello from the client",
-		}
-		response, err := c.SayHello(context.Background(), &message)
-		if err != nil {
-			log.Fatal("Error when calling SayHello: %s", err)
-		}
-		//response2, err := c.SayBey(context.Background(), &response)
-	*/
-	//log.Println("Response from Server: ", response.Body)
+/*
+	message := art.Message{
+		Body: "Hello from the client",
+	}
+	response, err := c.SayHello(context.Background(), &message)
+	if err != nil {
+		log.Fatal("Error when calling SayHello: %s", err)
+	}
+	//response2, err := c.SayBey(context.Background(), &response)
+*/
+//log.Println("Response from Server: ", response.Body)
 
-}
+//}

@@ -215,7 +215,7 @@ func (s *Server) GetArticles(ctx context.Context, input *Message) (*ListArticles
 
 	var articles []art.Article
 
-	articles, err = db.GetArticlesRepo(authorToken)
+	articles, err = db.GetArticlesRepo(authorToken, input.Info) // chganged
 	if len(articles) == 0 {
 		fmt.Println(err)
 		return nil, nil
